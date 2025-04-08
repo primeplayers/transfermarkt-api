@@ -24,18 +24,18 @@ class Players:
         SHIRT_NUMBER = "//span[@class='data-header__shirt-number']//text()"
         CURRENT_CLUB_NAME = "//span[@class='data-header__club']//text()"
         CURRENT_CLUB_URL = "//span[@class='data-header__club']//a//@href"
-        CURRENT_CLUB_JOINED = "//span[text()='Joined: ']//span//text()"
+        CURRENT_CLUB_JOINED = "//span[contains(text(),'Joined')]//following::span[1]//text()"
         LAST_CLUB_NAME = "//span[contains(text(),'Last club:')]//span//a//@title"
         LAST_CLUB_URL = "//span[contains(text(),'Last club:')]//span//a//@href"
         MOST_GAMES_FOR_CLUB_NAME = "//span[contains(text(),'Most games for:')]//span//a//text()"
         RETIRED_SINCE_DATE = "//span[contains(text(),'Retired since:')]//span//text()"
-        CURRENT_CLUB_CONTRACT_EXPIRES = "//span[text()='Contract expires: ']//span//text()"
+        CURRENT_CLUB_CONTRACT_EXPIRES = "//span[contains(text(),'Contract expires')]//following::span[1]//text()"
         CURRENT_CLUB_CONTRACT_OPTION = "//span[contains(text(),'Contract option:')]//following::span[1]//text()"
         NAME_IN_HOME_COUNTRY = "//span[text()='Name in home country:']//following::span[1]//text()"
         FULL_NAME = "//span[text()='Full name:']//following::span[1]//text()"
         DATE_OF_BIRTH_AGE = "//span[@itemprop='birthDate']//text()"
-        PLACE_OF_BIRTH_CITY = "//span[text()='Place of birth:']//following::span[1]//span//text()"
-        PLACE_OF_BIRTH_COUNTRY = "//span[text()='Place of birth:']//following::span[1]//span//img//@title"
+        PLACE_OF_BIRTH_CITY = "//span[contains(text(),'Place of birth')]//following::span[1]//text()"
+        PLACE_OF_BIRTH_COUNTRY = "//span[contains(text(),'Place of birth')]//following::span[1]//img//@title"
         HEIGHT = "//span[text()='Height:']//following::span[1]//text()"
         CITIZENSHIP = "//span[text()='Citizenship:']//following::span[1]//text()"
         POSITION = "//span[text()='Position:']//following::span[1]//text()"
@@ -46,7 +46,15 @@ class Players:
         AGENT_NAME = "//span[text()='Player agent:']//following::span[1]//text()"
         AGENT_URL = "//span[text()='Player agent:']//following::span[1]//a//@href"
         OUTFITTER = "//span[contains(text(),'Outfitter:')]//following::span[1]//text()"
-        SOCIAL_MEDIA = "//div[@class='socialmedia-icons']//@href"
+        SOCIAL_MEDIA = "//div[@class='social-media-toolbar__icons']//@href"
+        TRAINER_PROFILE_URL = "//a[@class='data-header__box--link']//@href"
+        TRAINER_PROFILE_POSITION = "//div[@class='dataProfileDaten']//span[1]//text()"
+        RELATIVES = (
+            "//div[@class='box tm-player-additional-data']"
+            "//a[contains(@href, 'profil/spieler') or contains(@href, 'profil/trainer')]"
+        )
+        RELATIVE_URL = ".//@href"
+        RELATIVE_NAME = ".//text()"
 
     class Search:
         FOUND = "//text()"
@@ -71,7 +79,10 @@ class Players:
         RANKINGS_POSITIONS = "//span[contains(@class, 'quick-fact__content--large')]//text()"
 
     class Transfers:
-        YOUTH_CLUBS = "//div[@data-viewport='Jugendvereine']//div//text()"
+        YOUTH_CLUBS = (
+            "//div[@class='box tm-player-additional-data'][descendant::*[contains(text(), 'Youth')]]"
+            "//div[@class='content']//text()"
+        )
 
     class Stats:
         ROWS = "//table[@class='items']//tbody//tr"
@@ -149,21 +160,21 @@ class Clubs:
         SIGNED_FROM = ".//a//img//@title"
         MARKET_VALUES = "//td[@class='rechts hauptlink']//text()"
         STATUSES = ".//td[@class='hauptlink']//span//@title"
+        JOINED_ON = ".//text()"
 
         class Present:
             PAGE_SIGNED_FROM = "//div[@id='yw1']//td[8]"
+            PAGE_JOINED_ON = "//div[@id='yw1']//td[7]"
             HEIGHTS = "//div[@id='yw1']//td[5]//text()"
             FOOTS = "//div[@id='yw1']//td[6]//text()"
-            JOINED_ON = "//div[@id='yw1']//td[7]//text()"
             CONTRACTS = "//div[@id='yw1']//td[9]//text()"
 
         class Past:
             PAGE_SIGNED_FROM = "//div[@id='yw1']//td[9]"
+            PAGE_JOINED_ON = "//div[@id='yw1']//td[8]"
             CURRENT_CLUB = "//div[@id='yw1']//td[5]//img//@title"
             HEIGHTS = "//div[@id='yw1']//td[6]/text()"
             FOOTS = "//div[@id='yw1']//td[7]//text()"
-            JOINED_ON = "//div[@id='yw1']//td[8]//text()"
-            CONTRACTS = "//div[@id='yw1']//td[10]//text()"
 
 
 class Competitions:

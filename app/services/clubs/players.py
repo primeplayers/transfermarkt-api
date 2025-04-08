@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime
 
 from app.services.base import TransfermarktBase
 from app.utils.regex import REGEX_DOB
-from app.utils.utils import clean_response, extract_from_url, safe_regex
+from app.utils.utils import extract_from_url, safe_regex
 from app.utils.xpath import Clubs
 
 
@@ -51,6 +50,9 @@ class TransfermarktClubPlayers(TransfermarktBase):
         page_players_signed_from = self.page.xpath(
             Clubs.Players.Past.PAGE_SIGNED_FROM if self.past else Clubs.Players.Present.PAGE_SIGNED_FROM,
         )
+        page_players_joined_on = self.page.xpath(
+            Clubs.Players.Past.PAGE_JOINED_ON if self.past else Clubs.Players.Present.PAGE_JOINED_ON,
+        )
         players_ids = [extract_from_url(url) for url in self.get_list_by_xpath(Clubs.Players.URLS)]
         players_names = self.get_list_by_xpath(Clubs.Players.NAMES)
         players_positions = self.get_list_by_xpath(Clubs.Players.POSITIONS)
@@ -71,16 +73,14 @@ class TransfermarktClubPlayers(TransfermarktBase):
             Clubs.Players.Past.FOOTS if self.past else Clubs.Players.Present.FOOTS,
             remove_empty=False,
         )
-        players_joined_on = self.get_list_by_xpath(
-            Clubs.Players.Past.JOINED_ON if self.past else Clubs.Players.Present.JOINED_ON,
-        )
+        players_joined_on = ["; ".join(e.xpath(Clubs.Players.JOINED_ON)) for e in page_players_joined_on]
         players_joined = ["; ".join(e.xpath(Clubs.Players.JOINED)) for e in page_players_infos]
         players_signed_from = ["; ".join(e.xpath(Clubs.Players.SIGNED_FROM)) for e in page_players_signed_from]
         players_contracts = (
-            [None] * len(players_ids) if self.past else self.get_list_by_xpath(Clubs.Players.Past.CONTRACTS)
+            [None] * len(players_ids) if self.past else self.get_list_by_xpath(Clubs.Players.Present.CONTRACTS)
         )
         players_marketvalues = self.get_list_by_xpath(Clubs.Players.MARKET_VALUES)
-        players_statuses = ["; ".join(e.xpath(Clubs.Players.STATUSES)) for e in page_players_infos]
+        players_statuses = ["; ".join(e.xpath(Clubs.Players.STATUSES)) for e in page_players_infos if e is not None]
 
         return [
             {
@@ -129,6 +129,5 @@ class TransfermarktClubPlayers(TransfermarktBase):
         """
         self.response["id"] = self.club_id
         self.response["players"] = self.__parse_club_players()
-        self.response["updatedAt"] = datetime.now()
 
-        return clean_response(self.response)
+        return self.response
