@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 
 from app.services.base import TransfermarktBase
@@ -26,6 +27,26 @@ class TransfermarktPlayerTransfers(TransfermarktBase):
         self.raise_exception_if_not_found(xpath=Players.Profile.NAME)
         self.transfer_history = self.make_request(url=self.URL_TRANSFERS.format(player_id=self.player_id))
 
+    def __map_transfer_fee(self, fee_string: str) -> str:
+        """
+        Extracts the fee value from a string. If the string contains '<', it processes
+        the string to fetch the value. Otherwise, it returns the original string.
+
+        Args:
+            fee_string (str): The fee string to process.
+
+        Returns:
+            str: The extracted fee value or the original string if no '<' is found.
+        """
+        print(fee_string)
+        value = fee_string
+        if "<" in fee_string:
+            # Use regex to extract the value inside the HTML tags
+            match = re.search(r'>([^<]+)<', fee_string)
+            value = match.group(1).strip() if match else ""
+        print(value)
+        return value
+
     def __parse_player_transfer_history(self) -> list:
         """
         Parse and retrieve the transfer history of the specified player from Transfermarkt,
@@ -53,7 +74,7 @@ class TransfermarktPlayerTransfers(TransfermarktBase):
                 "upcoming": transfer["upcoming"],
                 "season": transfer["season"],
                 "marketValue": transfer["marketValue"],
-                "fee": transfer["fee"],
+                "fee": self.__map_transfer_fee(transfer["fee"]),
             }
             for transfer in transfers
         ]

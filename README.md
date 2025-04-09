@@ -42,7 +42,7 @@ $ cd transfermarkt-api
 $ docker build -t transfermarkt-api . 
 
 # Instantiate the Docker container
-$ docker run -d -p 8000:8000 transfermarkt-api
+$ docker run --rm --name transfermarkt -p 8000:8000 transfermarkt-api
 
 # Access the API local page
 $ open http://localhost:8000/
