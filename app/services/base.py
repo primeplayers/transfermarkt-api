@@ -157,6 +157,7 @@ class TransfermarktBase:
         iloc_from: Optional[int] = None,
         iloc_to: Optional[int] = None,
         join_str: Optional[str] = None,
+        default: Optional[str] = None,
     ) -> Optional[str]:
         """
         Extract text content from the web page using the specified XPath expression.
@@ -180,7 +181,7 @@ class TransfermarktBase:
         element = self.page.xpath(xpath)
 
         if not element:
-            return None
+            return default
 
         if isinstance(element, list):
             element = [trim(e) for e in element if trim(e)]

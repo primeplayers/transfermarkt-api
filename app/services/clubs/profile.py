@@ -67,6 +67,7 @@ class TransfermarktClubProfile(TransfermarktBase):
             Clubs.Profile.MARKET_VALUE,
             iloc_to=3,
             join_str="",
+            default="0"
         )
         self.response["confederation"] = self.get_text_by_xpath(Clubs.Profile.CONFEDERATION)
         self.response["fifaWorldRanking"] = remove_str(self.get_text_by_xpath(Clubs.Profile.RANKING), "Pos")
@@ -77,11 +78,11 @@ class TransfermarktClubProfile(TransfermarktBase):
             "nationalTeamPlayers": self.get_text_by_xpath(Clubs.Profile.SQUAD_NATIONAL_PLAYERS),
         }
         self.response["league"] = {
-            "id": extract_from_url(self.get_text_by_xpath(Clubs.Profile.LEAGUE_ID)),
-            "name": self.get_text_by_xpath(Clubs.Profile.LEAGUE_NAME),
-            "countryId": safe_regex(self.get_text_by_xpath(Clubs.Profile.LEAGUE_COUNTRY_ID), REGEX_COUNTRY_ID, "id"),
-            "countryName": self.get_text_by_xpath(Clubs.Profile.LEAGUE_COUNTRY_NAME),
-            "tier": self.get_text_by_xpath(Clubs.Profile.LEAGUE_TIER),
+            "id": extract_from_url(self.get_text_by_xpath(Clubs.Profile.LEAGUE_ID), default=""),
+            "name": self.get_text_by_xpath(Clubs.Profile.LEAGUE_NAME, default=""),
+            "countryId": safe_regex(self.get_text_by_xpath(Clubs.Profile.LEAGUE_COUNTRY_ID), REGEX_COUNTRY_ID, "id", default=""),
+            "countryName": self.get_text_by_xpath(Clubs.Profile.LEAGUE_COUNTRY_NAME, default=""),
+            "tier": self.get_text_by_xpath(Clubs.Profile.LEAGUE_TIER, default=""),
         }
         self.response["historicalCrests"] = [
             safe_split(crest, "?")[0] for crest in self.get_list_by_xpath(Clubs.Profile.CRESTS_HISTORICAL)
